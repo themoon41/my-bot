@@ -105,7 +105,7 @@ async def tictac(ctx, p1 : discord.Member, p2 : discord.Member):
       else:
         line += " " + board[x]
 
-    # how goes first
+    # who goes first
     num = random.randint(1, 2)
     if num == 1:
       turn = player1
