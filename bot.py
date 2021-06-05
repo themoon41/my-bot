@@ -201,27 +201,32 @@ async def place_error(ctx, error):
 
 #twitch go live shoutout
 
-twitch = Twitch('app_id', 'app_secret', target_app_auth_scope=[AuthScope.USER_READ_BROADCAST])
-r = twitch.get_streams(user_id='user_id', user_login='user_login')
-pprint(r)
 
-
-@bot.event
-async def on_ready():
-
+@tasks.loop(seconds=10)
+async def Live_Check():
+  twitch = Twitch('app_key', 'app_secret', target_app_auth_scope=[AuthScope.USER_READ_BROADCAST])
+  r = twitch.get_streams(user_id='user_id', user_login='user_login')
   
+  pprint(r)
+
+
   if(r['data'] == []):
     print("no stream")
-    await asyncio.sleep(10)
     
   
     
   else:
-    print("fucker is live")
-    await bot.get_channel(837046032121593901).send("@here fucker is live!")
-    await asyncio.sleep(28800)
+    print("fucker is live")  
+    Live_Check.stop()
   
 
+Live_Check.start()
+
+@Live_Check.after_loop
+async def After_Live_Check():
+  await bot.get_channel(837046032121593901).send("@here userName is Live being bad at games." + "twitch channel link")
+  asyncio.sleep(28800)
+  Live_Check.start()
 
 
 
