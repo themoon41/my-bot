@@ -226,7 +226,7 @@ Live_Check.start()
 async def After_Live_Check():
   await bot.get_channel(837046032121593901).send("@here userName is Live being bad at games." + "twitch channel link")
   await asyncio.sleep(28800)
-  Live_Check.start()
+  Live_Check.restart()
 
 
 
