@@ -77,6 +77,7 @@ async def on_message(message):
     await update_data(users, message.author)
     await add_experience(users, message.author, 5)
     await level_up(users, message.author, message)
+    await role_check(users, message.author, message)
 
     with open('users.json', 'w') as f:
       json.dump(users, f)
@@ -107,6 +108,34 @@ async def level_up(users, user, message):
         users[f'{user.id}']['level'] = lvl_end
     
   
+
+async def role_check(users, user, message):
+  lvl = users[f'{user.id}']['level']
+  member = message.author
+  role1 = discord.utils.get(member.guild.roles, id = 851325784441749566)
+  role2 = discord.utils.get(member.guild.roles, id = 851325738833805352)
+  role3 = discord.utils.get(member.guild.roles, id = 851325659984429097)
+  role4 = discord.utils.get(member.guild.roles, id = 851325603894526004)
+  role5 = discord.utils.get(member.guild.roles, id = 851325359537389570)
+
+  if lvl >= 40:
+    await member.add_roles(role1)
+    await member.remove_roles(role2)
+  elif 30 <= lvl < 40:
+    await member.add_roles(role2)
+    await member.add_roles(role3)
+  elif 20 <= lvl < 30:
+    await member.add_roles(role3)
+    await member.remove_roles(role4)
+  elif 10 <= lvl < 20:
+    await member.add_roles(role4)
+    await member.remove_roles(role5)
+  elif 5 <= lvl < 9:
+    await member.add_roles(role5)
+  
+  
+ 
+
 @bot.command(help= 'shows current level')
 async def level(ctx, member: discord.Member = None):
     if not member:
