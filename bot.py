@@ -70,8 +70,8 @@ async def on_member_json(member):
 
 @bot.event
 async def on_message(message):
-  if message.authpr.bot == False:
-    with open('wsuers.json', 'r') as f:
+  if message.author.bot == False:
+    with open('users.json', 'r') as f:
       users = json.load(f)
 
     await update_data(users, message.author)
