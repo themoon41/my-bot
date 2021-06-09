@@ -314,16 +314,19 @@ async def Live_Check():
     
   
     
-  else:
+  elif(r['data'] != []:
     print("fucker is live")  
     Live_Check.stop()
+       
+  else:
+     print('something went wrong)
   
 
 Live_Check.start()
 
 @Live_Check.after_loop
 async def After_Live_Check():
-  await bot.get_channel(837046032121593901).send("@here userName is Live being bad at games." + "twitch channel link")
+  await bot.get_channel(channel_id).send("@here userName is Live being bad at games." + "twitch channel link")
   await asyncio.sleep(28800)
   Live_Check.restart()
 
