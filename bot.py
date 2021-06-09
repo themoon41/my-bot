@@ -300,10 +300,10 @@ async def place_error(ctx, error):
 
 #twitch go live shoutout
 
-
+ twitch = Twitch('app_key', 'app_secret', target_app_auth_scope=[AuthScope.USER_READ_BROADCAST])
 @tasks.loop(seconds=10)
 async def Live_Check():
-  twitch = Twitch('app_key', 'app_secret', target_app_auth_scope=[AuthScope.USER_READ_BROADCAST])
+ 
   r = twitch.get_streams(user_id='user_id', user_login='user_login')
   
   pprint(r)
@@ -319,7 +319,7 @@ async def Live_Check():
     Live_Check.stop()
        
   else:
-     print('something went wrong)
+     print('something went wrong')
   
 
 Live_Check.start()
