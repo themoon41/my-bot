@@ -8,9 +8,11 @@ import os
 from dotenv import load_dotenv
 
 
+intents = discord.Intents.default()
 load_dotenv()
 intents = discord.Intents.default()
 intents.message_content = True
+intents.members = True
 bot = commands.Bot(command_prefix='!',intents=intents)
 client = discord.Client(intents=intents)
 
@@ -18,12 +20,12 @@ client = discord.Client(intents=intents)
 
 #Bot working test
 
-@client.event
+@bot.event
 async def on_ready():
-  print(f'Systems Online as: {client.user}')
+  print(f'Systems Online as: {bot.user}')
+  await bot.get_channel(1521809052555022369).send(f'{bot.user} Is Online.')
 
-
-@client.event
+@bot.event
 async def on_member_join(member):
   await member.send("Welcome!".format(member.mention))
 
@@ -44,100 +46,8 @@ async def test(ctx):
   
   # Level Up system
 
-@bot.event
-async def on_member_json(member):
-  with open('users.json', 'r') as f:
-    users = json.load(f)
-  
-  
-  await update_data(users, member)
-
-  with open('users.json', 'w') as f:
-    json.dump(users, f)
 
 
-@bot.event
-async def on_message(message):
-  if message.author.bot == False:
-    with open('users.json', 'r') as f:
-      users = json.load(f)
-
-    await update_data(users, message.author)
-    await add_experience(users, message.author, 5)
-    await level_up(users, message.author, message)
-    await role_check(users, message.author, message)
-
-    with open('users.json', 'w') as f:
-      json.dump(users, f)
-    
-    await bot.process_commands(message)
-
-
-
-async def update_data(users, user):
-  if not f'{user.id}' in users:
-    users[f'{user.id}'] = {}
-    users[f'{user.id}']['experience'] = 0
-    users[f'{user.id}']['level'] = 1
-
-
-async def add_experience(users, user, exp):
-  users[f'{user.id}']['experience'] += exp
-
-
-async def level_up(users, user, message):
-    with open('levels.json', 'r') as g:
-        levels = json.load(g)
-    experience = users[f'{user.id}']['experience']
-    lvl_start = users[f'{user.id}']['level']
-    lvl_end = int(experience ** (1 / 4))
-    if lvl_start < lvl_end:
-        await message.channel.send(f'{user.mention} has leveled up to level {lvl_end}')
-        users[f'{user.id}']['level'] = lvl_end
-    
-  
-
-async def role_check(users, user, message):
-  lvl = users[f'{user.id}']['level']
-  member = message.author
-  role1 = discord.utils.get(member.guild.roles, id = 851325784441749566)
-  role2 = discord.utils.get(member.guild.roles, id = 851325738833805352)
-  role3 = discord.utils.get(member.guild.roles, id = 851325659984429097)
-  role4 = discord.utils.get(member.guild.roles, id = 851325603894526004)
-  role5 = discord.utils.get(member.guild.roles, id = 851325359537389570)
-
-  if lvl >= 40:
-    await member.add_roles(role1)
-    await member.remove_roles(role2)
-  elif 30 <= lvl < 40:
-    await member.add_roles(role2)
-    await member.add_roles(role3)
-  elif 20 <= lvl < 30:
-    await member.add_roles(role3)
-    await member.remove_roles(role4)
-  elif 10 <= lvl < 20:
-    await member.add_roles(role4)
-    await member.remove_roles(role5)
-  elif 5 <= lvl < 9:
-    await member.add_roles(role5)
-  
-  
- 
-
-@bot.command(help= 'shows current level')
-async def level(ctx, member: discord.Member = None):
-    if not member:
-        id = ctx.message.author.id
-        with open('users.json', 'r') as f:
-            users = json.load(f)
-        lvl = users[str(id)]['level']
-        await ctx.send(f'You are at level {lvl}!')
-    else:
-        id = member.id
-        with open('users.json', 'r') as f:
-            users = json.load(f)
-        lvl = users[str(id)]['level']
-        await ctx.send(f'{member} is at level {lvl}!')
 
 
 
@@ -186,7 +96,7 @@ async def tictac(ctx, p1 : discord.Member, p2 : discord.Member):
     for x in range(len(board)):
       if x == 2 or x ==  5 or x == 8:
         line += " " + board[x]
-        await bot.get_channel(838302104749604925).send(line)
+        await bot.get_channel(1521809344121933875).send(line)
         line = ""
 
       else:
@@ -228,7 +138,7 @@ async def p(ctx, pos : int):
         for x in range(len(board)):
           if x == 2 or x ==  5 or x == 8:
            line += " " + board[x]
-           await bot.get_channel(838302104749604925).send(line)
+           await bot.get_channel(1521809344121933875).send(line)
            line = ""
           else:
             line += " " + board[x]
@@ -236,7 +146,7 @@ async def p(ctx, pos : int):
         checkWinner(winningConditions, mark)
         print(count)
         if count >= 9:
-          await bot.get_channel(838302104749604925).send("It's a tie")
+          await bot.get_channel(1521809344121933875).send("It's a tie")
         elif gameOver == True:
           await ctx.send(mark + "wins!")
         
@@ -244,19 +154,19 @@ async def p(ctx, pos : int):
         # switching turns
         elif turn == player1:
           turn = player2
-          await bot.get_channel(838302104749604925).send("It's now <@" + str(player2.id) + ">'s turn.")
+          await bot.get_channel(1521809344121933875).send("It's now <@" + str(player2.id) + ">'s turn.")
         elif turn == player2:
           turn = player1
-          await bot.get_channel(838302104749604925).send("It's now <@" + str(player1.id) + ">'s turn.")
+          await bot.get_channel(1521809344121933875).send("It's now <@" + str(player1.id) + ">'s turn.")
     
 
 
       else:
-        await bot.get_channel(838302104749604925).send("Pick a number between 1 and 9 (inclusive) and a unmarked title.")
+        await bot.get_channel(1521809344121933875).send("Pick a number between 1 and 9 (inclusive) and a unmarked title.")
     else:
-      await bot.get_channel(838302104749604925).send("Please wait for your turn.")
+      await bot.get_channel(1521809344121933875).send("Please wait for your turn.")
   else:
-    await bot.get_channel(838302104749604925).send("Start a game using !tictac.")
+    await bot.get_channel(1521809344121933875).send("Start a game using !tictac.")
 
 
 
@@ -290,4 +200,4 @@ async def place_error(ctx, error):
 
 Discord_token = os.getenv('D_TOKEN')
 
-client.run(Discord_token)
+bot.run(Discord_token)
