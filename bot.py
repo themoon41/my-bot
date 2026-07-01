@@ -1,43 +1,32 @@
 import asyncio
-from itertools import repeat
-import discord
-from discord.ext import commands
-import os
-import requests
-from requests import get
 import json
 import random
-import time
-from twitchAPI.twitch import Twitch, AuthScope
-from twitchAPI.webhook import TwitchWebHook
-from pprint import pprint
-
-intens = discord.Intents.default()
-bot = commands.Bot(command_prefix='!', case_insensitive=True)
-client = discord.Client()
+import discord
+import requests
+from discord.ext import commands
+import os
+from dotenv import load_dotenv
 
 
-# Random quote function
+load_dotenv()
+intents = discord.Intents.default()
+intents.message_content = True
+bot = commands.Bot(command_prefix='!',intents=intents)
+client = discord.Client(intents=intents)
 
-def get_quote():
-  response = requests.get("https://zenquotes.io/api/random")
-  json_data = json.loads(response.text)
-  quote = json_data[0]['q'] + " -" + json_data[0]['a']
-  return(quote)
+
 
 #Bot working test
 
-@bot.event
+@client.event
 async def on_ready():
-  print('Systems Online as: {0.user}'.format(bot))
+  print(f'Systems Online as: {client.user}')
 
 
-@bot.event
+@client.event
 async def on_member_join(member):
   await member.send("Welcome!".format(member.mention))
-  await asyncio.sleep(30)
-  CultistRole = discord.utils.get(member.guild.roles, id = 848982082243919873)
-  await member.add_roles(CultistRole)
+
 
 
 
@@ -47,11 +36,10 @@ async def on_member_join(member):
 async def hello(ctx):
   await ctx.send("hi {0}".format(ctx.author.mention))
 
+@bot.command(help='test')
+async def test(ctx):
+  await ctx.send('test worked')
 
-@bot.command(help= "random quote of randomness.")
-async def quote(ctx):
-  responds = get_quote()
-  await ctx.send(responds)
 
   
   # Level Up system
@@ -292,44 +280,14 @@ async def tictac_error(ctx, error):
 async def place_error(ctx, error):
   print(error)
   if isinstance(error, commands.MissingRequiredArgument):
-    await ctx.send("Enter postition you would like to place a marker.")
+    await ctx.send("Enter position you would like to place a marker.")
   elif isinstance(error, commands.BadArgument):
     await ctx.send("Make should you put a number.")
 
-#end of tic tac toe
-
-#twitch go live shoutout
-
- twitch = Twitch('app_key', 'app_secret', target_app_auth_scope=[AuthScope.USER_READ_BROADCAST])
-@tasks.loop(seconds=10)
-async def Live_Check():
- 
-  r = twitch.get_streams(user_id='user_id', user_login='user_login')
-  
-  pprint(r)
-
-
-  if(r['data'] == []):
-    print("no stream")
-    
-  
-    
-  elif(r['data'] != []:
-    print("fucker is live")  
-    Live_Check.stop()
-       
-  else:
-     print('something went wrong')
-  
-
-Live_Check.start()
-
-@Live_Check.after_loop
-async def After_Live_Check():
-  await bot.get_channel(channel_id).send("@here userName is Live being bad at games." + "twitch channel link")
-  await asyncio.sleep(28800)
-  Live_Check.restart()
+#end of tic-tac-toe
 
 
 
-bot.run('discord_token')
+Discord_token = os.getenv('D_TOKEN')
+
+client.run(Discord_token)
