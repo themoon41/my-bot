@@ -45,9 +45,10 @@ async def test(ctx):
   
 # Level Up system
 
-
+# discord server id
 Guild_ID = 1521809051867025529
 
+#data set of roles and level requirements
 My_Awards = {
   Guild_ID : [
     RoleAward(role_id=1521845456123203787, level_requirement=5, role_name=None),
@@ -60,6 +61,8 @@ My_Awards = {
 lvl = DiscordLevelingSystem(awards=My_Awards)
 lvl.connect_to_database_file(r'/home/themoon40/PycharmProjects/my-bot/DiscordLevelingSystem.db')
 
+
+#giving out xp on message excluding the bot
 @bot.event
 async def on_message(message):
   if message.author != bot.user:
