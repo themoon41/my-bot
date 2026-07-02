@@ -83,7 +83,7 @@ async def on_message(message):
 
 @bot.command(help="Check your current level")
 async def rank(ctx):
-  data = await lvl.get_data_for(ctx.autor)
+  data = await lvl.get_data_for(ctx.author)
   await ctx.send(f'You are level {data.level} with {data.xp} xp')
 
 
