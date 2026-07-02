@@ -3,7 +3,6 @@ import json
 import time
 import random
 import discord
-import requests
 from discord.ext import commands
 import os
 from dotenv import load_dotenv
@@ -12,7 +11,7 @@ from discordLevelingSystem import DiscordLevelingSystem, RoleAward
 
 
 load_dotenv()
-intents = discord.Intents(messages=True, guilds=True, members=True)
+intents = discord.Intents(messages=True, guilds=True, members=True, message_content=True)
 bot = commands.Bot(command_prefix='!',intents=intents)
 
 
@@ -45,30 +44,47 @@ async def test(ctx):
   
 # Level Up system
 
+try:
+    loop = asyncio.get_event_loop()
+except RuntimeError as e:
+    if str(e).startswith('There is no current event loop in thread'):
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+    else:
+        raise
+
 # discord server id
-#Guild_ID = 1521809051867025529
+Guild_ID = 1521809051867025529
 
 #data set of roles and level requirements
-#My_Awards = {
-  #Guild_ID : [
-   # RoleAward(role_id=1521845456123203787, level_requirement=5, role_name=None),
-    #RoleAward(role_id=1521845755873198251, level_requirement=10, role_name=None),
-    #RoleAward(role_id=1521845797841403914, level_requirement=20, role_name=None),
-  #]
-#}
+My_Awards = {
+  Guild_ID : [
+    RoleAward(role_id=1521845456123203787, level_requirement=5, role_name=None),
+    RoleAward(role_id=1521845755873198251, level_requirement=10, role_name=None),
+    RoleAward(role_id=1521845797841403914, level_requirement=20, role_name=None),
+  ]
+}
 
 
-#lvl = DiscordLevelingSystem(awards=My_Awards)
-#lvl.connect_to_database_file(r'/home/themoon40/PycharmProjects/my-bot/DiscordLevelingSystem.db')
+lvl = DiscordLevelingSystem(awards=My_Awards)
+lvl.connect_to_database_file(r'/home/themoon40/PycharmProjects/my-bot/DiscordLevelingSystem.db')
 
 
 #giving out xp on message excluding the bot
-#@bot.event
-#async def on_message(message):
-  #if message.author != bot.user:
-    #await lvl.award_xp(amount=15, message=message)
-  #else:
-    #return
+@bot.event
+async def on_message(message):
+  if message.author != bot.user:
+    await bot.process_commands(message)
+    await lvl.award_xp(amount=15, message=message)
+  else:
+    return
+
+# command for level and xp check
+
+@bot.command(help="Check your current level")
+async def rank(ctx):
+  data = await lvl.get_data_for(ctx.autor)
+  await ctx.send(f'You are level {data.level} with {data.xp} xp')
 
 
 #Tic Tac Toe
