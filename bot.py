@@ -25,8 +25,8 @@ async def on_ready():
 
 @bot.event
 async def on_member_join(member):
-  await member.send("Welcome!".format(member.mention))
-  await bot.get_channel(1521809052555022369).send("Everyone Welcome")
+  await member.send("Welcome {}! ".format(member.mention))
+  await bot.get_channel(1521809052555022369).send("Everyone Please Welcome {}!".format(member.mention))
 
 
 
