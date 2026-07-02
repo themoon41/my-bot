@@ -26,6 +26,7 @@ async def on_ready():
 @bot.event
 async def on_member_join(member):
   await member.send("Welcome!".format(member.mention))
+  await bot.get_channel(1521809052555022369).send("Everyone Welcome")
 
 
 
@@ -45,29 +46,29 @@ async def test(ctx):
 # Level Up system
 
 # discord server id
-Guild_ID = 1521809051867025529
+#Guild_ID = 1521809051867025529
 
 #data set of roles and level requirements
-My_Awards = {
-  Guild_ID : [
-    RoleAward(role_id=1521845456123203787, level_requirement=5, role_name=None),
-    RoleAward(role_id=1521845755873198251, level_requirement=10, role_name=None),
-    RoleAward(role_id=1521845797841403914, level_requirement=20, role_name=None),
-  ]
-}
+#My_Awards = {
+  #Guild_ID : [
+   # RoleAward(role_id=1521845456123203787, level_requirement=5, role_name=None),
+    #RoleAward(role_id=1521845755873198251, level_requirement=10, role_name=None),
+    #RoleAward(role_id=1521845797841403914, level_requirement=20, role_name=None),
+  #]
+#}
 
 
-lvl = DiscordLevelingSystem(awards=My_Awards)
-lvl.connect_to_database_file(r'/home/themoon40/PycharmProjects/my-bot/DiscordLevelingSystem.db')
+#lvl = DiscordLevelingSystem(awards=My_Awards)
+#lvl.connect_to_database_file(r'/home/themoon40/PycharmProjects/my-bot/DiscordLevelingSystem.db')
 
 
 #giving out xp on message excluding the bot
-@bot.event
-async def on_message(message):
-  if message.author != bot.user:
-    await lvl.award_xp(amount=15, message=message)
-  else:
-    return
+#@bot.event
+#async def on_message(message):
+  #if message.author != bot.user:
+    #await lvl.award_xp(amount=15, message=message)
+  #else:
+    #return
 
 
 #Tic Tac Toe
