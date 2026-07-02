@@ -1,5 +1,6 @@
 import asyncio
 import json
+import time
 import random
 import discord
 import requests
@@ -13,8 +14,6 @@ from discordLevelingSystem import DiscordLevelingSystem, RoleAward
 load_dotenv()
 intents = discord.Intents(messages=True, guilds=True, members=True)
 bot = commands.Bot(command_prefix='!',intents=intents)
-
-
 
 
 #Bot working test
