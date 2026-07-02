@@ -6,15 +6,14 @@ import requests
 from discord.ext import commands
 import os
 from dotenv import load_dotenv
+from discordLevelingSystem import DiscordLevelingSystem, RoleAward
 
 
-intents = discord.Intents.default()
+
 load_dotenv()
-intents = discord.Intents.default()
-intents.message_content = True
-intents.members = True
+intents = discord.Intents(messages=True, guilds=True, members=True)
 bot = commands.Bot(command_prefix='!',intents=intents)
-client = discord.Client(intents=intents)
+
 
 
 
@@ -23,7 +22,7 @@ client = discord.Client(intents=intents)
 @bot.event
 async def on_ready():
   print(f'Systems Online as: {bot.user}')
-  await bot.get_channel(1521809052555022369).send(f'{bot.user} Is Online.')
+  await bot.get_channel(1521809052555022369).send(f'```{bot.user} Is Online.```')
 
 @bot.event
 async def on_member_join(member):
@@ -44,14 +43,32 @@ async def test(ctx):
 
 
   
-  # Level Up system
+# Level Up system
 
 
+Guild_ID = 1521809051867025529
+
+My_Awards = {
+  Guild_ID : [
+    RoleAward(role_id=1521845456123203787, level_requirement=5, role_name=None),
+    RoleAward(role_id=1521845755873198251, level_requirement=10, role_name=None),
+    RoleAward(role_id=1521845797841403914, level_requirement=20, role_name=None),
+  ]
+}
 
 
+lvl = DiscordLevelingSystem(awards=My_Awards)
+lvl.connect_to_database_file(r'/home/themoon40/PycharmProjects/my-bot/DiscordLevelingSystem.db')
+
+@bot.event
+async def on_message(message):
+  if message.author != bot.user:
+    await lvl.award_xp(amount=15, message=message)
+  else:
+    return
 
 
-# Tic Tac Toe
+#Tic Tac Toe
 
 player1 = ""
 player2 = ""
