@@ -120,7 +120,7 @@ async def leaderboard(ctx):
 #RPS
 
 @bot.command(help="Play rock paper scissors against the Bot")
-async def rps(ctx, choice: str, message):
+async def rps(ctx, choice: str):
   choices = ['rock', 'paper', 'scissors']
   if choice not in choices:
       await ctx.send("Please choose rock, paper, or scissors.")
@@ -129,10 +129,10 @@ async def rps(ctx, choice: str, message):
   bot_choice = random.choice(choices)
   result = RPS_win(choice, bot_choice)
 
-  if result != "Player wins! Awarded 15xp!":
-    await ctx.send(f"You picked {choice}, Moon bot picked {bot_choice}. {result}")
-  elif result == "Player wins! Awarded 15xp!":
-    await ctx.send(f"You picked {choice}, Moon bot picked {bot_choice}. {result}")
+  await ctx.send(f"You picked {choice}, Moon bot picked {bot_choice}. {result}")
+
+  if result == "Player wins! Awarded 15xp!":
+    await lvl.add_xp(member=ctx.author, amount=15)
 
 
 def RPS_win(player_choice, bot_choice):
