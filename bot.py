@@ -22,7 +22,16 @@ async def on_ready():
 
 @bot.event
 async def on_member_join(member):
+  embed = discord.Embed(
+    title="Bot Stuff Server",
+    description="Rules",
+    color=discord.Color.purple()
+  )
+  embed.add_field(name="1. Don't be a dick", value="\u200b", inline=False)
+  embed.add_field(name="2. Have fun", value="\u200b", inline=False)
+  embed.add_field(name="3. 20 minute coding adventures only", value="\u200b", inline=False)
   await member.send("Welcome {}! ".format(member.mention))
+  await member.send(embed=embed)
   await bot.get_channel(1521809052555022369).send("Everyone Please Welcome {}!".format(member.mention))
 
 
