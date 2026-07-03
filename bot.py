@@ -98,6 +98,13 @@ async def rank(ctx):
   data = await lvl.get_data_for(ctx.author)
   await ctx.send(f'You are level {data.level} with {data.xp} xp')
 
+@bot.command()
+async def lb(ctx):
+  data = await lvl.each_member_data(ctx.guild, sort_by='rank', limit=10)
+  leaderboard = "Top Members:\n"
+  for rank, member in enumerate(data, start=1):
+    leaderboard += f"{rank}. {member.name} - Rank: {member.rank}\n"
+    await ctx.send(leaderboard)
 
 #games
 
