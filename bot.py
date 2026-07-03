@@ -43,10 +43,16 @@ async def on_member_join(member):
 async def hello(ctx):
   await ctx.send("hi {0}".format(ctx.author.mention))
 
-@bot.command(help='test')
-async def test(ctx):
-  await ctx.send('test worked')
-
+@bot.command(help='Github link')
+async def git(ctx):
+  Gitlink = "https://github.com/themoon41/my-bot"
+  embed = discord.Embed(
+    title="My Bot",
+    description="Link to Moon Bot code",
+    color=discord.Color.purple(),
+    url=Gitlink
+  )
+  await ctx.send(embed=embed)
 
   
 # Level Up system
@@ -228,6 +234,7 @@ def checkWinner(winningConditions, mark):
   for condition in winningConditions:
    if board[condition[0]] == mark and board[condition[1]] == mark and board[condition[2]] == mark or count >= 9:
      gameOver = True
+
 
 @tictac.error
 async def tictac_error(ctx, error):
