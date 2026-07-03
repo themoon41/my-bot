@@ -1,5 +1,7 @@
 import asyncio
 import random
+from encodings.aliases import aliases
+
 import discord
 from discord.ext import commands
 import os
@@ -98,8 +100,8 @@ async def rank(ctx):
   data = await lvl.get_data_for(ctx.author)
   await ctx.send(f'You are level {data.level} with {data.xp} xp')
 
-@bot.command()
-async def lb(ctx):
+@bot.command(help="Show the top 10 users by rank", aliases=['lb'])
+async def leaderboard(ctx):
   data = await lvl.each_member_data(ctx.guild, sort_by='rank', limit=10)
   leaderboard = "Top Members:\n"
   for rank, member in enumerate(data, start=1):
@@ -168,7 +170,7 @@ winningConditions = [
 ]
 
 
-@bot.command(help= "Play tic tac toe with someone")
+@bot.command(help= "Play tic tac toe with someone", aliases=['ttt'])
 async def tictac(ctx, p1 : discord.Member, p2 : discord.Member):
   global player1
   global player2
