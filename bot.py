@@ -6,9 +6,7 @@ import discord
 from discord.ext import commands
 import os
 from dotenv import load_dotenv
-from discordLevelingSystem import DiscordLevelingSystem, RoleAward
-
-
+from discordLevelingSystem import DiscordLevelingSystem, RoleAward, LevelUpAnnouncement, announcement
 
 load_dotenv()
 intents = discord.Intents(messages=True, guilds=True, members=True, message_content=True)
@@ -65,8 +63,16 @@ My_Awards = {
   ]
 }
 
+#level up announcement settings
+embed = discord.Embed()
+embed.set_author(name=LevelUpAnnouncement.Member.name, icon_url=LevelUpAnnouncement.Member.avatar_url)
+embed.description = f'You have leveled up {LevelUpAnnouncement.Member.mention}! Current level is {LevelUpAnnouncement.LEVEL}'
 
-lvl = DiscordLevelingSystem(awards=My_Awards)
+# the announcement
+announcement = LevelUpAnnouncement(embed, level_up_channel_ids=[1522416390555045888])
+
+# level up system set up then connecting to database
+lvl = DiscordLevelingSystem(awards=My_Awards, level_up_announcement=announcement)
 lvl.connect_to_database_file(r'/home/themoon40/PycharmProjects/my-bot/DiscordLevelingSystem.db')
 
 
