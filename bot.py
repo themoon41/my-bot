@@ -1,12 +1,10 @@
 import asyncio
-import json
-import time
 import random
 import discord
 from discord.ext import commands
 import os
 from dotenv import load_dotenv
-from discordLevelingSystem import DiscordLevelingSystem, RoleAward, LevelUpAnnouncement, announcement
+from discordLevelingSystem import DiscordLevelingSystem, RoleAward, LevelUpAnnouncement
 
 load_dotenv()
 intents = discord.Intents(messages=True, guilds=True, members=True, message_content=True)
@@ -93,7 +91,7 @@ async def on_message(message):
   else:
     return
 
-# command for level and xp check
+# command for level and xp check and leaderboard
 
 @bot.command(help="Check your current level")
 async def rank(ctx):
