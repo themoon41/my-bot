@@ -74,7 +74,7 @@ My_Awards = {
 #level up announcement settings
 embed = discord.Embed()
 embed.set_author(name=LevelUpAnnouncement.Member.name, icon_url=LevelUpAnnouncement.Member.avatar_url)
-embed.description = f'You have leveled up {LevelUpAnnouncement.Member.mention}! Current level is {LevelUpAnnouncement.LEVEL}'
+embed.description = f'{LevelUpAnnouncement.Member.mention} has leveled up! Current level is {LevelUpAnnouncement.LEVEL}'
 
 # the announcement
 announcement = LevelUpAnnouncement(embed, level_up_channel_ids=[1522416390555045888])
