@@ -133,7 +133,7 @@ async def tictac(ctx, p1 : discord.Member, p2 : discord.Member):
     player1 = p1
     player2 = p2
 
-    # pirnt the board
+    # print the board
     line = ""
     for x in range(len(board)):
       if x == 2 or x ==  5 or x == 8:
@@ -148,10 +148,10 @@ async def tictac(ctx, p1 : discord.Member, p2 : discord.Member):
     num = random.randint(1, 2)
     if num == 1:
       turn = player1
-      await bot.get_channel.send("It is <@" + str(player1.id) + ">'s turn.")
+      await bot.get_channel(1521809344121933875).send("It is <@" + str(player1.id) + ">'s turn.")
     elif num == 2:
       turn = player2
-      await bot.get_channel.send("It is <@" + str(player2.id) + ">'s turn.")
+      await bot.get_channel(1521809344121933875).send("It is <@" + str(player2.id) + ">'s turn.")
     else:
       await ctx.send("There is already a game in progress! Please wait until it is finished")
 
@@ -234,7 +234,7 @@ async def place_error(ctx, error):
   if isinstance(error, commands.MissingRequiredArgument):
     await ctx.send("Enter position you would like to place a marker.")
   elif isinstance(error, commands.BadArgument):
-    await ctx.send("Make should you put a number.")
+    await ctx.send("Make sure you put a number.")
 
 #end of tic-tac-toe
 
