@@ -101,6 +101,46 @@ async def rank(ctx):
   await ctx.send(f'You are level {data.level} with {data.xp} xp')
 
 
+#games
+
+
+
+#RPS
+
+@bot.command(help="Play rock paper scissors against the Bot")
+async def rps(ctx, choice: str, message):
+  choices = ['rock', 'paper', 'scissors']
+  if choice not in choices:
+      await ctx.send("Please choose rock, paper, or scissors.")
+      return
+
+  bot_choice = random.choice(choices)
+  result = RPS_win(choice, bot_choice)
+
+  if result != "Player wins! Awarded 15xp!":
+    await ctx.send(f"You picked {choice}, Moon bot picked {bot_choice}. {result}")
+  elif result == "Player wins! Awarded 15xp!":
+    await ctx.send(f"You picked {choice}, Moon bot picked {bot_choice}. {result}")
+
+
+def RPS_win(player_choice, bot_choice):
+  if player_choice == bot_choice:
+    return "It's a Tie!"
+  elif (player_choice == 'rock' and bot_choice == 'scissors') or (player_choice == 'paper' and bot_choice == 'rock') or (player_choice == 'scissors' and bot_choice == 'paper'):
+    return "Player wins! Awarded 15xp!"
+  else:
+    return "Moon Bot Wins"
+
+
+
+
+
+
+
+
+
+
+
 #Tic Tac Toe
 
 player1 = ""
