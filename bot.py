@@ -45,14 +45,7 @@ async def hello(ctx):
 
 @bot.command(help='Github link')
 async def git(ctx):
-  Gitlink = "https://github.com/themoon41/my-bot"
-  embed = discord.Embed(
-    title="My Bot",
-    description="Link to Moon Bot code",
-    color=discord.Color.purple(),
-    url=Gitlink
-  )
-  await ctx.send(embed=embed)
+  await ctx.send("Find the code here: https://github.com/themoon41/my-bot")
 
   
 # Level Up system
