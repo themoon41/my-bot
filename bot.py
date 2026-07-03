@@ -104,9 +104,11 @@ async def rank(ctx):
 async def leaderboard(ctx):
   data = await lvl.each_member_data(ctx.guild, sort_by='rank', limit=10)
   leaderboard = "Top Members:\n"
-  for rank, member in enumerate(data, start=1):
-    leaderboard += f"{rank}. {member.name} - Rank: {member.rank}\n"
-    await ctx.send(leaderboard)
+  for rank, member in enumerate(data):
+    leaderboard += f"{rank}. {member.name} - Level: {member.level} \n"
+
+  await ctx.send(leaderboard)
+
 
 #games
 
