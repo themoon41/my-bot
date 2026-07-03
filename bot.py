@@ -47,6 +47,9 @@ async def hello(ctx):
 async def git(ctx):
   await ctx.send("Find the code here: https://github.com/themoon41/my-bot")
 
+@bot.command(help='For The Memes', aliases=['pppp'])
+async def peepeepoopoo(ctx):
+  await ctx.send("https://www.youtube.com/watch?v=PMNY8g0_wJA")
   
 # Level Up system
 
