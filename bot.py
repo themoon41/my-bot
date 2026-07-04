@@ -1,7 +1,6 @@
 import asyncio
 import random
-from encodings.aliases import aliases
-
+from typing import List
 import discord
 from discord.ext import commands
 import os
@@ -150,157 +149,149 @@ def RPS_win(player_choice, bot_choice):
 
 
 
-
-
-
 #Tic Tac Toe
 
-player1 = ""
-player2 = ""
-turn = ""
-gameOver = True
+#button logic
 
-board = []
+class TicTacToeButton(discord.ui.Button['TicTacToe']):
+  def __init__(self, x: int, y: int):
+    super().__init__(style=discord.ButtonStyle.secondary, label='\u200b', row=y)
+    self.x = x
+    self.y = y
 
-
-winningConditions = [
-  [0, 1, 2],
-  [3, 4, 5],
-  [6, 7, 8],
-  [8, 3, 6],
-  [1, 4, 7],
-  [2, 5, 8],
-  [0, 4, 8],
-  [2, 4, 6]
-]
+# Game logic
+  async def callback(self, interaction: discord.Interaction):
+    assert self.view is not None
+    view: TicTacToe = self.view
 
 
-@bot.command(help= "Play tic tac toe with someone", aliases=['ttt'])
-async def tictac(ctx, p1 : discord.Member, p2 : discord.Member):
-  global player1
-  global player2
-  global turn
-  global gameOver
-  global count
+    if interaction.user not in (view.X, view.O):
+      return await interaction.response.send_message("You are not apart of this game.", ephemeral=True)
 
-  if gameOver:
-    global board
-    board = [":white_large_square:", ":white_large_square:", ":white_large_square:", ":white_large_square:", ":white_large_square:", ":white_large_square:", ":white_large_square:", ":white_large_square:", ":white_large_square:"]
-    turn = ""
-    gameOver = False
-    count = 0
 
-    player1 = p1
-    player2 = p2
+    if view.current_player == view.X and interaction.user != view.X:
+      return await interaction.response.send_message("It's not your turn", ephemeral=True)
+    if view.current_player == view.O and interaction.user != view.O:
+      return await interaction.response.send_message("It's your turn", ephemeral=True)
 
-    # print the board
-    line = ""
-    for x in range(len(board)):
-      if x == 2 or x ==  5 or x == 8:
-        line += " " + board[x]
-        await bot.get_channel(1521809344121933875).send(line)
-        line = ""
 
-      else:
-        line += " " + board[x]
 
-    # who goes first
-    num = random.randint(1, 2)
-    if num == 1:
-      turn = player1
-      await bot.get_channel(1521809344121933875).send("It is <@" + str(player1.id) + ">'s turn.")
-    elif num == 2:
-      turn = player2
-      await bot.get_channel(1521809344121933875).send("It is <@" + str(player2.id) + ">'s turn.")
+
+
+    state = view.board[self.y][self.x]
+    if state in (view.X, view.O):
+      return
+
+    if view.current_player == view.X:
+      self.style = discord.ButtonStyle.danger
+      self.label = 'X'
+      self.disabled = True
+      view.board[self.y][self.x] = view.X
+      view.current_player = view.O
+      content = "It's now O's Turn"
+
     else:
-      await ctx.send("There is already a game in progress! Please wait until it is finished")
+      self.style = discord.ButtonStyle.success
+      self.label = 'O'
+      self.disabled = True
+      view.board[self.y][self.x] = view.O
+      view.current_player = view.X
+      content = "It's now X's Turn"
 
-
-@bot.command(help="Used to place marker tic tac toe.")
-async def p(ctx, pos : int):
-  global turn
-  global player1
-  global player2
-  global board
-  global count
-  
-  if not gameOver:
-    mark = ""
-    if turn == ctx.author:
-      if turn == player1:
-       mark = ":regional_indicator_x:"
-      elif turn == player2:
-        mark = ":o2:"
-      if 0 < pos < 10 and board[pos - 1] == ":white_large_square:":
-        board[pos - 1] = mark
-        count += 1
-
-        #print board again
-        line = ""
-        for x in range(len(board)):
-          if x == 2 or x ==  5 or x == 8:
-           line += " " + board[x]
-           await bot.get_channel(1521809344121933875).send(line)
-           line = ""
-          else:
-            line += " " + board[x]
-
-        checkWinner(winningConditions, mark)
-        print(count)
-        if count >= 9:
-          await bot.get_channel(1521809344121933875).send("It's a tie")
-        elif gameOver == True:
-          await ctx.send(mark + "wins!")
-        
-
-        # switching turns
-        elif turn == player1:
-          turn = player2
-          await bot.get_channel(1521809344121933875).send("It's now <@" + str(player2.id) + ">'s turn.")
-        elif turn == player2:
-          turn = player1
-          await bot.get_channel(1521809344121933875).send("It's now <@" + str(player1.id) + ">'s turn.")
-    
-
-
+    winner = view.check_board_winner()
+    if winner is not None:
+      if winner == view.X:
+        content = "X won!"
+      elif winner == view.O:
+        content = "O won!"
       else:
-        await bot.get_channel(1521809344121933875).send("Pick a number between 1 and 9 (inclusive) and a unmarked title.")
-    else:
-      await bot.get_channel(1521809344121933875).send("Please wait for your turn.")
-  else:
-    await bot.get_channel(1521809344121933875).send("Start a game using !tictac.")
+        content = "Tie!"
+
+      for child in view.children:
+        child.disabled = True
+
+
+      view.stop()
+
+    await interaction.response.edit_message(content=content, view=view)
+
+#board
+
+class TicTacToe(discord.ui.View):
+  children: List[TicTacToeButton]
+  X = -1
+  O = -1
+  def __init__(self,):
+    super().__init__()
+    self.current_player = self.X
+    self.board =[
+        [0,0,0],
+        [0,0,0],
+        [0,0,0],
+      ]
+
+    for x in range(3):
+      for y in range(3):
+        self.add_item(TicTacToeButton(x, y))
+
+  def check_board_winner(self):
+    for across in self.board:
+      value = sum(across)
+      if value == 3:
+        return self.O
+      elif value == -3:
+        return self.X
+
+    #vertical lines
+
+    for line in range(3):
+      value = self.board[0][line] + self.board[1][line] + self.board[2][line]
+      if value == 3:
+        return self.O
+      elif value == -3:
+        return self.X
+
+
+    #diagonal lines
+
+    diag = self.board[0][2] + self.board[1][1] + self.board[2][2]
+    if diag == 3:
+      return self.O
+    elif diag == -3:
+      return self.X
+
+    diag = self.board[0][0] + self.board[1][1] + self.board[2][2]
+    if diag == 3:
+      return self.O
+    elif diag == -3:
+      return self.X
+
+    if all(i != 0 for row in self.board for i in row):
+      return self.Tie
+
+    return None
+
+#game command
+@bot.command()
+async def tic(ctx: commands.Context, opponent: discord.Member):
+  if opponent == ctx.author:
+    return ctx.send("You must @ another user to play")
+
+  await ctx.send("Tic Tac Toe: X goes first!", view=TicTacToe())
+
+#end of tic tac toe
 
 
 
 
-  
-def checkWinner(winningConditions, mark):
-  global gameOver
-  for condition in winningConditions:
-   if board[condition[0]] == mark and board[condition[1]] == mark and board[condition[2]] == mark or count >= 9:
-     gameOver = True
-
-
-@tictac.error
-async def tictac_error(ctx, error):
-  print(error)
-  if isinstance(error, commands.MissingRequiredArgument):
-    await ctx.send("Mention 2 players for this game.")
-  elif isinstance(error, commands.BadArgument):
-    await ctx.send("Make sure you @ message another player.")
-
-@p.error
-async def place_error(ctx, error):
-  print(error)
-  if isinstance(error, commands.MissingRequiredArgument):
-    await ctx.send("Enter position you would like to place a marker.")
-  elif isinstance(error, commands.BadArgument):
-    await ctx.send("Make sure you put a number.")
-
-#end of tic-tac-toe
 
 
 
+
+
+
+
+#bot key and run
 Discord_token = os.getenv('D_TOKEN')
 
 bot.run(Discord_token)
