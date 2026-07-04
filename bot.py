@@ -279,9 +279,18 @@ class TicTacToe(discord.ui.View):
 @bot.command()
 async def tic(ctx: commands.Context, opponent: discord.Member):
   if opponent == ctx.author:
-    return ctx.send("You must @ another user to play")
+    return await ctx.send("You must @ another user to play")
+  elif opponent == bot.user:
+    return await ctx.send("The Bot can't play")
+  else:
+    await ctx.send("Tic Tac Toe: X goes first!", view=TicTacToe(player_x=ctx.author, player_o=opponent))
 
-  await ctx.send("Tic Tac Toe: X goes first!", view=TicTacToe(player_x=ctx.author, player_o=opponent))
+
+@tic.error
+async def tic_error(ctx: commands.Context, error:commands.CommandError):
+  if isinstance(error, commands.MissingRequiredArgument):
+    await ctx.send("Please @ the other player")
+    return
 
 #end of tic tac toe
 
