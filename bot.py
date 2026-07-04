@@ -165,15 +165,14 @@ class TicTacToeButton(discord.ui.Button['TicTacToe']):
     view: TicTacToe = self.view
 
 
-    if interaction.user not in (view.X, view.O):
-      return await interaction.response.send_message("You are not apart of this game.", ephemeral=True)
+    if interaction.user not in (view.players_x, view.players_o):
+      return await interaction.response.send_message("Your not in this game!", ephemeral=True)
 
+    if view.current_player == view.X and interaction.user != view.players_x:
+      return await interaction.response.send_message("It's not your turn!", ephemeral=True)
 
-    if view.current_player == view.X and interaction.user != view.X:
-      return await interaction.response.send_message("It's not your turn", ephemeral=True)
-    if view.current_player == view.O and interaction.user != view.O:
-      return await interaction.response.send_message("It's your turn", ephemeral=True)
-
+    if view.current_player == view.O and interaction.user != view.players_o:
+      return await interaction.response.send_message("It's your turn!", ephemeral=True)
 
 
 
@@ -220,9 +219,12 @@ class TicTacToeButton(discord.ui.Button['TicTacToe']):
 class TicTacToe(discord.ui.View):
   children: List[TicTacToeButton]
   X = -1
-  O = -1
-  def __init__(self,):
+  O = 1
+  def __init__(self,player_x: discord.Member, player_o: discord.Member):
     super().__init__()
+    self.players_x = player_x
+    self.players_o = player_o
+
     self.current_player = self.X
     self.board =[
         [0,0,0],
@@ -260,7 +262,7 @@ class TicTacToe(discord.ui.View):
     elif diag == -3:
       return self.X
 
-    diag = self.board[0][0] + self.board[1][1] + self.board[2][2]
+    diag = self.board[0][0] + self.board[1][1] + self.board[2][0]
     if diag == 3:
       return self.O
     elif diag == -3:
@@ -277,7 +279,7 @@ async def tic(ctx: commands.Context, opponent: discord.Member):
   if opponent == ctx.author:
     return ctx.send("You must @ another user to play")
 
-  await ctx.send("Tic Tac Toe: X goes first!", view=TicTacToe())
+  await ctx.send("Tic Tac Toe: X goes first!", view=TicTacToe(player_x=ctx.author, player_o=opponent))
 
 #end of tic tac toe
 
