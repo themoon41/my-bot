@@ -21,10 +21,12 @@ async def on_ready():
 
 @bot.event
 async def on_member_join(member):
+  git_url = "https://github.com/themoon41/my-bot"
   embed = discord.Embed(
     title="Bot Stuff Server",
     description="Rules",
-    color=discord.Color.purple()
+    color=discord.Color.purple(),
+    url=git_url,
   )
   embed.add_field(name="1. Don't be a dick", value="\u200b", inline=False)
   embed.add_field(name="2. Have fun", value="\u200b", inline=False)
