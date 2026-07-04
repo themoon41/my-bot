@@ -278,9 +278,7 @@ class TicTacToe(discord.ui.View):
 #game command
 @bot.command()
 async def tic(ctx: commands.Context, opponent: discord.Member):
-  if opponent == ctx.author:
-    return await ctx.send("You must @ another user to play")
-  elif opponent == bot.user:
+  if opponent == bot.user:
     return await ctx.send("The Bot can't play")
   else:
     await ctx.send("Tic Tac Toe: X goes first!", view=TicTacToe(player_x=ctx.author, player_o=opponent))
