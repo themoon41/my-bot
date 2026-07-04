@@ -299,11 +299,6 @@ async def tic_error(ctx: commands.Context, error:commands.CommandError):
 
 
 
-
-
-
-
-
 #bot key and run
 Discord_token = os.getenv('D_TOKEN')
 
