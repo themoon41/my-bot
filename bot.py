@@ -222,6 +222,7 @@ class TicTacToe(discord.ui.View):
   O = 1
   def __init__(self,player_x: discord.Member, player_o: discord.Member):
     super().__init__()
+    self.Tie = 0
     self.players_x = player_x
     self.players_o = player_o
 
@@ -243,6 +244,8 @@ class TicTacToe(discord.ui.View):
         return self.O
       elif value == -3:
         return self.X
+      elif all(i != 0 for row in self.board for i in row):
+        return self.Tie
 
     #vertical lines
 
@@ -268,8 +271,7 @@ class TicTacToe(discord.ui.View):
     elif diag == -3:
       return self.X
 
-    if all(i != 0 for row in self.board for i in row):
-      return self.Tie
+
 
     return None
 
