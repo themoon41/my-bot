@@ -168,7 +168,7 @@ class TicTacToeButton(discord.ui.Button['TicTacToe']):
 
 
     if interaction.user not in (view.players_x, view.players_o):
-      return await interaction.response.send_message("Your not in this game!", ephemeral=True)
+      return await interaction.response.send_message("You're not in this game!", ephemeral=True)
 
     if view.current_player == view.X and interaction.user != view.players_x:
       return await interaction.response.send_message("It's not your turn!", ephemeral=True)
@@ -282,6 +282,8 @@ class TicTacToe(discord.ui.View):
 async def tic(ctx: commands.Context, opponent: discord.Member):
   if opponent == bot.user:
     return await ctx.send("The Bot can't play")
+  if opponent == ctx.author:
+    return await ctx.send("You can't play by yourself")
 
   player_x = ctx.author
   player_o = opponent
@@ -302,8 +304,6 @@ async def tic_error(ctx: commands.Context, error:commands.CommandError):
     return
 
 #end of tic tac toe
-
-
 
 
 
