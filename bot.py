@@ -207,10 +207,10 @@ class TicTacToeButton(discord.ui.Button['TicTacToe']):
     winner = view.check_board_winner()
     if winner is not None:
       if winner == view.X:
-        content = "X won!"
+        content = "X won! Awarding 50xp!"
         await lvl.add_xp(member=view.players_x, amount=50)
       elif winner == view.O:
-        content = "O won!"
+        content = "O won! Awarding 50xp!"
         await lvl.add_xp(member=view.players_o, amount=50)
       else:
         content = "Tie!"
