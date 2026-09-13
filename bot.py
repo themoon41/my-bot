@@ -6,6 +6,7 @@ from discord.ext import commands
 import os
 from dotenv import load_dotenv
 from discordLevelingSystem import DiscordLevelingSystem, RoleAward, LevelUpAnnouncement
+import sqlite3
 
 load_dotenv()
 intents = discord.Intents(messages=True, guilds=True, members=True, message_content=True)
@@ -36,7 +37,11 @@ async def on_member_join(member):
   await bot.get_channel(1521809052555022369).send("Everyone Please Welcome {}!".format(member.mention))
 
 
+#Bot error message
 
+@bot.event
+async def on_command_error(ctx, error):
+  await bot.get_channel(1521809052555022369).send("Something went fucky!")
 
 #Basic bot commands
 
@@ -203,8 +208,10 @@ class TicTacToeButton(discord.ui.Button['TicTacToe']):
     if winner is not None:
       if winner == view.X:
         content = "X won!"
+        await lvl.add_xp(member=view.players_x, amount=50)
       elif winner == view.O:
         content = "O won!"
+        await lvl.add_xp(member=view.players_o, amount=50)
       else:
         content = "Tie!"
 
@@ -243,7 +250,7 @@ class TicTacToe(discord.ui.View):
     for across in self.board:
       value = sum(across)
       if value == 3:
-        return self.O
+          return self.O
       elif value == -3:
         return self.X
       elif all(i != 0 for row in self.board for i in row):
