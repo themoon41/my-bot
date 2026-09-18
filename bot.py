@@ -41,7 +41,7 @@ async def on_member_join(member):
 
 @bot.event
 async def on_command_error(ctx, error):
-  await bot.get_channel(1521809052555022369).send("Something went fucky!")
+  await ctx.send("Please make sure you use an actually command. For a list of available commands please use !help.")
 
 #Basic bot commands
 
@@ -104,7 +104,7 @@ async def on_message(message):
 
 # command for level and xp check and leaderboard
 
-@bot.command(help="Check your current level")
+@bot.command(aliases=['level'], help="Check your current level")
 async def rank(ctx):
   data = await lvl.get_data_for(ctx.author)
   await ctx.send(f'You are level {data.level} with {data.xp} xp')
