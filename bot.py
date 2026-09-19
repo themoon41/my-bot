@@ -268,13 +268,13 @@ class TicTacToe(discord.ui.View):
 
     #diagonal lines
 
-    diag = self.board[0][2] + self.board[1][1] + self.board[2][2]
+    diag = self.board[0][0] + self.board[1][1] + self.board[2][2]
     if diag == 3:
       return self.O
     elif diag == -3:
       return self.X
 
-    diag = self.board[0][0] + self.board[1][1] + self.board[2][0]
+    diag = self.board[0][2] + self.board[1][1] + self.board[2][0]
     if diag == 3:
       return self.O
     elif diag == -3:
