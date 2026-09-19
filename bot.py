@@ -194,7 +194,7 @@ class TicTacToeButton(discord.ui.Button['TicTacToe']):
       self.disabled = True
       view.board[self.y][self.x] = view.X
       view.current_player = view.O
-      content = "It's now O's Turn"
+      content = f"It's now {view.players_o.mention} Turn!"
 
     else:
       self.style = discord.ButtonStyle.success
@@ -202,15 +202,15 @@ class TicTacToeButton(discord.ui.Button['TicTacToe']):
       self.disabled = True
       view.board[self.y][self.x] = view.O
       view.current_player = view.X
-      content = "It's now X's Turn"
+      content = f"It's now {view.players_x.mention} Turn!"
 
     winner = view.check_board_winner()
     if winner is not None:
       if winner == view.X:
-        content = "X won! Awarding 50xp!"
+        content = f"{view.players_x.mention} Wins! Awarding 50xp!"
         await lvl.add_xp(member=view.players_x, amount=50)
       elif winner == view.O:
-        content = "O won! Awarding 50xp!"
+        content = f"{view.players_o.mention} Wins! Awarding 50xp!"
         await lvl.add_xp(member=view.players_o, amount=50)
       else:
         content = "Tie!"
